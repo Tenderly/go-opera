@@ -1,6 +1,6 @@
-FROM golang:1.14-alpine as builder
+FROM golang:1.17-alpine as builder
 
-RUN apk add --no-cache make gcc musl-dev linux-headers git
+RUN apk add --no-cache make gcc musl-dev linux-headers git wget
 
 WORKDIR /go/go-opera
 COPY . .
@@ -16,13 +16,16 @@ RUN export GIT_COMMIT=$(git rev-list -1 HEAD) && \
 	-o /tmp/opera \
 	./cmd/opera
 
-
+RUN wget https://opera.fantom.network/mainnet.g -O /tmp/mainnet-genesis.json
+RUN wget https://opera.fantom.network/testnet.g -O /tmp/testnet-genesis.json
 
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /tmp/opera /
+COPY --from=builder /tmp/mainnet-genesis.json /
+COPY --from=builder /tmp/testnet-genesis.json /
 
 EXPOSE 5050 18545 18546 18547 19090
 
