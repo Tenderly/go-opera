@@ -1,0 +1,8 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    id: "build"
+    entrypoint: "/bin/bash"
+    args: [ "-c", "docker build -t gcr.io/tenderly-project/opera:1.0.2-rc.7 -f docker/Dockerfile.opera ." ]
+
+options:
+  machineType: 'N1_HIGHCPU_8'
